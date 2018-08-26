@@ -1,0 +1,62 @@
+buildscript {
+    ext.kotlin_version = '1.2.61'
+
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
+apply plugin: 'kotlin2js'
+
+group 'tomwamt.kui'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile "org.jetbrains.kotlin:kotlin-stdlib-js"
+    testCompile "org.jetbrains.kotlin:kotlin-test-js"
+}
+
+project("example") {
+    apply plugin: "kotlin2js"
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        compile project(":")
+        compile "org.jetbrains.kotlin:kotlin-stdlib-js"
+        testCompile "org.jetbrains.kotlin:kotlin-test-js"
+    }
+
+    task assembleWeb(type: Copy, dependsOn: classes) {
+        configurations.compile.each { File file ->
+            from(zipTree(file.absolutePath), {
+                includeEmptyDirs = false
+                include { fileTreeElement ->
+                    def path = fileTreeElement.path
+                    path.endsWith(".js")
+                }
+            })
+        }
+        from compileKotlin2Js.destinationDir
+        include '**/*.js'
+        includeEmptyDirs false
+        into "${projectDir}/build/web/js"
+    }
+
+    task copyStaticWeb(type: Copy) {
+        from 'static'
+        exclude 'test.html'
+        into "${projectDir}/build/web"
+    }
+
+    assemble.dependsOn(assembleWeb, copyStaticWeb)
+}
