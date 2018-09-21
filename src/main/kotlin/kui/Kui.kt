@@ -1,33 +1,31 @@
 package kui
 
-import org.w3c.dom.asList
-import org.w3c.dom.get
+import org.w3c.dom.Element
 import kotlin.browser.document
-import kotlin.reflect.KClass
+import kotlin.properties.ReadWriteProperty
+import kotlin.reflect.KProperty
 
-class Kui(val name: String) {
-    private var rootComponent: ComponentFactory<out Component>? = null
-
-    fun start() {
-        if (rootComponent == null) throw IllegalStateException("Root component not set")
-
-        // Find <kui> tag with name
-        val elems = document.getElementsByTagName("kui").asList()
-        val root = elems
-                .find { it.hasAttribute("app") && it.attributes["app"]?.value == name }
-                ?: throw IllegalStateException("Cannot find root element for app '$name'")
-
-        // Render root component to dom elements
-        rootComponent!!.render(root)
-    }
-
-    inline fun <reified C : Component> rootComponent(renderer: Renderer<C>): Kui {
-        return rootComponent(C::class, renderer)
-    }
-
-    fun <C : Component> rootComponent(componentClass: KClass<C>, renderer: Renderer<C>): Kui {
-        rootComponent = ComponentFactory(componentClass, renderer)
-        return this
-    }
+fun mountComponent(element: Element, component: Component) {
+    component.mountPoint = element
+    component.rootElement = null
+    component.render()
 }
 
+fun mountComponent(id: String, component: Component) {
+    mountComponent(document.getElementById(id) ?: return, component)
+}
+
+fun <T> renderOnSet(value: T, target: Component? = null): ReadWriteProperty<Component, T> {
+    return object : ReadWriteProperty<Component, T> {
+        private var field: T = value
+
+        override fun getValue(thisRef: Component, property: KProperty<*>): T {
+            return field
+        }
+
+        override fun setValue(thisRef: Component, property: KProperty<*>, value: T) {
+            field = value
+            (target ?: thisRef).render()
+        }
+    }
+}

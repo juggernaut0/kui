@@ -1,5 +1,5 @@
 buildscript {
-    ext.kotlin_version = '1.2.61'
+    ext.kotlin_version = '1.2.70'
 
     repositories {
         mavenCentral()
@@ -10,9 +10,10 @@ buildscript {
 }
 
 apply plugin: 'kotlin2js'
+apply plugin: 'maven-publish'
 
-group 'tomwamt.kui'
-version '1.0-SNAPSHOT'
+group 'com.github.juggernaut0.kui'
+version '0.1'
 
 repositories {
     mavenCentral()
@@ -21,6 +22,21 @@ repositories {
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-js"
     testCompile "org.jetbrains.kotlin:kotlin-test-js"
+}
+
+task sourceJar(type: Jar) {
+    from sourceSets.main.allSource
+    classifier "sources"
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from components.java
+
+            artifact sourceJar
+        }
+    }
 }
 
 project("example") {
