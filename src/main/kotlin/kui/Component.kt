@@ -1,12 +1,14 @@
 package kui
 
-import org.w3c.dom.Element
-
 abstract class Component {
-    internal var mountPoint: Element? = null
-    internal var rootElement: Element? = null
+    internal val rootElement = KuiComponentNode()
+    internal var innerMarkup: (MarkupBuilder.() -> Unit)? = null
 
     abstract fun render()
 
-    fun markup(): AbstractMarkupBuilder = RootMarkupBuilder(this)
+    protected fun MarkupBuilder.renderInner() {
+        innerMarkup?.invoke(this)
+    }
+
+    protected fun markup(): AbstractMarkupBuilder = RootMarkupBuilder(this)
 }

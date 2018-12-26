@@ -1,10 +1,11 @@
 import kui.Component
 import kui.Props
+import kui.renderOnSet
 
 class TodoListComponent : Component() {
     private var nextItem: String = ""
     private val items: MutableList<TodoListItem> = mutableListOf()
-    private var selectedItem: TodoListItem? = null
+    private var selectedItem: TodoListItem? by renderOnSet(null)
 
     private fun addItem() {
         items.add(TodoListItem(nextItem))
@@ -26,8 +27,8 @@ class TodoListComponent : Component() {
             p {
                 +"Size: ${items.size}"
             }
-            select(options = items, model = ::selectedItem)
-            button(Props(click = ::removeItem)) { +"Delete" }
+            select(options = items, model = ::selectedItem, nullOption = "None")
+            button(Props(click = ::removeItem, disabled = selectedItem == null)) { +"Delete" }
             ul {
                 for(item in items) {
                     component(TodoListItemComponent(item))

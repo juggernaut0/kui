@@ -1,12 +1,6 @@
 package kui
 
 import kui.Props.Companion.empty
-import org.w3c.dom.Element
-import org.w3c.dom.HTMLInputElement
-import org.w3c.dom.HTMLOptionElement
-import org.w3c.dom.HTMLSelectElement
-import org.w3c.dom.Node
-import kotlin.browser.document
 import kotlin.reflect.KMutableProperty0
 
 @DslMarker
@@ -14,27 +8,16 @@ annotation class MarkupDsl
 
 @MarkupDsl
 sealed class AbstractMarkupBuilder {
-    abstract fun add(node: Node)
-
-    fun makeElement(tag: String, props: Props): Element {
-        val elem = document.createElement(tag)
-        props.id?.let { elem.id = it }
-        props.classes.joinToString(separator = " ").takeIf { it.isNotEmpty() }?.let { elem.className = it }
-        for ((name, value) in props.attrs) {
-            elem.setAttribute(name, value)
-        }
-        if (props.click != null) {
-            val click = props.click
-            elem.addEventListener("click", { _ -> click() })
-        }
-        return elem
-    }
+    abstract fun add(node: KuiNode)
 
     inline fun htmlElement(tag: String, props: Props = empty, block: MarkupBuilder.() -> Unit) {
-        val elem = makeElement(tag, props)
+        val elem = SimpleKuiElement(tag, props)
         MarkupBuilder(elem).block()
         add(elem)
     }
+
+    inline fun a(props: Props = empty, href: String = "#", block: MarkupBuilder.() -> Unit)
+            = htmlElement("a", props.copy(attrs = props.attrs + ("href" to href)), block)
 
     inline fun button(props: Props = empty, block: MarkupBuilder.() -> Unit) = htmlElement("button", props, block)
 
@@ -47,42 +30,10 @@ sealed class AbstractMarkupBuilder {
     inline fun h5(props: Props = empty, block: MarkupBuilder.() -> Unit) = htmlElement("h5", props, block)
     inline fun h6(props: Props = empty, block: MarkupBuilder.() -> Unit) = htmlElement("h6", props, block)
 
-    fun inputText(props: Props = empty, model: KMutableProperty0<String>? = null) {
-        val elem = makeElement("input", props.copy(attrs = props.attrs + mapOf("type" to "text")))
-        if (model != null) {
-            (elem as HTMLInputElement).value = model.get()
-            elem.addEventListener("input", { e -> (e.target as? HTMLInputElement)?.let { model.set(it.value) } })
-        }
-        add(elem)
-    }
-
-    fun inputNumber(props: Props = empty, model: KMutableProperty0<Double>? = null) {
-        val elem = makeElement("input", props.copy(attrs = props.attrs + ("type" to "number")))
-        if (model != null) {
-            (elem as HTMLInputElement).value = model.get().toString()
-            elem.addEventListener("input", { e -> (e.target as? HTMLInputElement)?.value?.toDoubleOrNull()?.let { model.set(it) } })
-        }
-        add(elem)
-    }
-
-    fun checkbox(props: Props = empty, model: KMutableProperty0<Boolean>? = null) {
-        val elem = makeElement("input", props.copy(attrs = props.attrs + ("type" to "checkbox")))
-        if (model != null) {
-            (elem as HTMLInputElement).checked = model.get()
-            elem.addEventListener("change", { e -> (e.target as? HTMLInputElement)?.let { model.set(it.checked) } })
-        }
-        add(elem)
-    }
-
-    fun <T> radio(props: Props = empty, name: String, value: T, model: KMutableProperty0<T>? = null) {
-        val elem = makeElement("input", props.copy(attrs = props.attrs + listOf("type" to "radio", "name" to name)))
-        if (model != null) {
-            (elem as HTMLInputElement).checked = value == model.get()
-            // change is only called when radio is selected, NOT unselected
-            elem.addEventListener("change", { model.set(value) })
-        }
-        add(elem)
-    }
+    fun inputText(props: Props = empty, model: KMutableProperty0<String>? = null) = add(InputTextKuiElement(props, model))
+    fun inputNumber(props: Props = empty, model: KMutableProperty0<Double>? = null) = add(InputNumberKuiElement(props, model))
+    fun checkbox(props: Props = empty, model: KMutableProperty0<Boolean>? = null) = add(CheckboxKuiElement(props, model))
+    fun <T> radio(props: Props = empty, name: String, value: T, model: KMutableProperty0<T>? = null) = add(RadioKuiElement(props, name, value, model))
 
     inline fun label(props: Props = empty, forId: String? = null, block: MarkupBuilder.() -> Unit) {
         val realProps = if (forId != null) props.copy(attrs = props.attrs + ("for" to forId)) else props
@@ -93,23 +44,23 @@ sealed class AbstractMarkupBuilder {
 
     inline fun p(props: Props = empty, block: MarkupBuilder.() -> Unit) = htmlElement("p", props, block)
 
-    fun <T> select(props: Props = empty, options: List<T> = emptyList(), model: KMutableProperty0<T?>? = null) {
-        val elem = makeElement("select", props) as HTMLSelectElement
-        for (opt in options) {
-            val optElem = document.createElement("option") as HTMLOptionElement
-            optElem.text = opt.toString()
-            elem.add(optElem)
+    fun <T : Any> select(props: Props = empty, options: List<T> = emptyList(), model: KMutableProperty0<T>? = null)
+            = add(SelectKuiElement(props, options, model?.toModel()))
+    fun <T : Any> select(props: Props = empty, options: List<T> = emptyList(), nullOption: String = "", model: KMutableProperty0<T?>? = null) {
+        val optsWithNull = mutableListOf<OptionWrapper<T>>(NullOption(nullOption))
+        options.mapTo(optsWithNull) { ValueOption(it) }
+
+        val delModel = model?.let { m ->
+            object : ModelProperty<OptionWrapper<T>> {
+                override fun get(): OptionWrapper<T> = m.get()?.let { ValueOption(it) } ?: NullOption("")
+                override fun set(t: OptionWrapper<T>) = m.set(t.value)
+            }
         }
-        if (model != null) {
-            // -1 = no selection
-            elem.selectedIndex = options.indexOf(model.get())
-            elem.addEventListener("change", { e ->
-                (e.target as? HTMLSelectElement)?.let { model.set(options[it.selectedIndex]) }
-            })
-        }
-        add(elem)
+
+        add(SelectKuiElement(props, optsWithNull, delModel))
     }
 
+    inline fun small(props: Props = empty, block: MarkupBuilder.() -> Unit) = htmlElement("small", props, block)
     inline fun span(props: Props = empty, block: MarkupBuilder.() -> Unit) = htmlElement("span", props, block)
 
     inline fun table(props: Props = empty, block: MarkupBuilder.() -> Unit) = htmlElement("table", props, block)
@@ -122,30 +73,44 @@ sealed class AbstractMarkupBuilder {
     inline fun ul(props: Props = empty, block: MarkupBuilder.() -> Unit) = htmlElement("ul", props, block)
 
     operator fun String.unaryPlus() {
-        add(document.createTextNode(this))
+        add(KuiTextNode(this))
     }
 }
 
 class RootMarkupBuilder(private val component: Component) : AbstractMarkupBuilder() {
-    override fun add(node: Node) {
-        val element = node as? Element ?: document.createElement("span")
-        if (component.rootElement == null) {
-            component.mountPoint?.appendChild(element)
-        } else {
-            component.mountPoint?.replaceChild(element, component.rootElement!!)
+    override fun add(node: KuiNode) {
+        if (component.rootElement.isSet) {
+            node.renderAgainst(component.rootElement.get())
         }
-        component.rootElement = element
+        component.rootElement.set(node)
     }
 }
 
-class MarkupBuilder(private val parent: Element) : AbstractMarkupBuilder() {
-    override fun add(node: Node) {
-        parent.appendChild(node)
+class MarkupBuilder(private val parent: KuiElement) : AbstractMarkupBuilder() {
+    override fun add(node: KuiNode) {
+        parent.addChild(node)
     }
 
-    fun component(component: Component) {
-        component.mountPoint = parent
-        component.rootElement = null
+    fun component(component: Component, innerMarkup: (MarkupBuilder.() -> Unit)? = null) {
+        component.innerMarkup = innerMarkup
         component.render()
+        if (component.rootElement.isSet) {
+            add(component.rootElement)
+        }
     }
+}
+
+private interface OptionWrapper<T : Any> {
+    val value: T?
+}
+private class ValueOption<T : Any>(override val value: T) : OptionWrapper<T> {
+    override fun toString(): String = value.toString()
+    override fun equals(other: Any?): Boolean = other is ValueOption<*> && other.value == value
+    override fun hashCode(): Int = 31 * value.hashCode()
+}
+private class NullOption<T : Any>(private val def: String) : OptionWrapper<T> {
+    override val value: T? get() = null
+    override fun toString(): String = def
+    override fun equals(other: Any?): Boolean = other is NullOption<*>
+    override fun hashCode(): Int = 31 * this::class.js.hashCode()
 }

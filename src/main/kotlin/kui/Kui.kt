@@ -6,9 +6,11 @@ import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
 fun mountComponent(element: Element, component: Component) {
-    component.mountPoint = element
-    component.rootElement = null
+    component.rootElement.unset()
     component.render()
+    if (component.rootElement.isSet) {
+        element.appendChild(component.rootElement.render())
+    }
 }
 
 fun mountComponent(id: String, component: Component) {
@@ -26,6 +28,14 @@ fun <T> renderOnSet(value: T, target: Component? = null): ReadWriteProperty<Comp
         override fun setValue(thisRef: Component, property: KProperty<*>, value: T) {
             field = value
             (target ?: thisRef).render()
+        }
+    }
+}
+
+inline fun componentOf(crossinline render: (AbstractMarkupBuilder) -> Unit): Component {
+    return object : Component() {
+        override fun render() {
+            render(markup())
         }
     }
 }
