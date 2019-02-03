@@ -34,7 +34,7 @@ fun main() {
 }
 ```
 
-Check out the [examples](example\src\main\kotlin) for more advanced 
+Check out the [examples](example/src/main/kotlin) for more advanced 
 usage.
 
 ## Getting started
@@ -45,12 +45,13 @@ To publish locally, clone the project and run
 `./gradlew publishToMavenLocal`.
 
 To run tests, first install jest with `npm install jest` or 
-`.\gradlew installJest`. The run the tests with `.\gradlew build`.
+`./gradlew installJest`. The run the tests with `./gradlew build`.
 
 ## TODOs
 
 * Expose more DOM events for elements to react to (mousenter, 
 mouseleave, focus, blur, etc.)
+* Expose more HTML elements
 * Increased test coverage
 * Testing utility library for testing user applications
     * Virtual rendering, shallow renders, snapshot testing etc.

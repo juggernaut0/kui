@@ -110,9 +110,17 @@ abstract class KuiElement(private val tag: String, private val props: Props) : K
             }
         }
 
+        if (existing != null) {
+            for ((name, _) in existing.props.attrs) {
+                if (name !in props.attrs) {
+                    elem.removeAttribute(name)
+                }
+            }
+        }
         for ((name, value) in props.attrs) {
             elem.setAttribute(name, value)
         }
+
         if (props.click != null) {
             val click = props.click
             swapEventListener("click", elem, existing) { _ -> click() }
