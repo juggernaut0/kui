@@ -77,12 +77,16 @@ sealed class AbstractMarkupBuilder {
     }
 }
 
-class RootMarkupBuilder(private val component: Component) : AbstractMarkupBuilder() {
+class RootMarkupBuilder(private val component: Component, private val internal: Boolean) : AbstractMarkupBuilder() {
     override fun add(node: KuiNode) {
-        if (component.rootElement.isSet) {
-            node.renderAgainst(component.rootElement.get())
+        if (internal) {
+            component.rootElement = KuiComponentNode(node)
+        } else {
+            if (component.rootElement.isSet) {
+                node.renderAgainst(component.rootElement.get())
+            }
+            component.rootElement.set(node)
         }
-        component.rootElement.set(node)
     }
 }
 
@@ -93,7 +97,7 @@ class MarkupBuilder(private val parent: KuiElement) : AbstractMarkupBuilder() {
 
     fun component(component: Component, innerMarkup: (MarkupBuilder.() -> Unit)? = null) {
         component.innerMarkup = innerMarkup
-        component.render()
+        component.renderInternal()
         if (component.rootElement.isSet) {
             add(component.rootElement)
         }

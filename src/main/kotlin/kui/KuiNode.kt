@@ -237,9 +237,7 @@ class SelectKuiElement<T>(props: Props, private val options: List<T> = emptyList
     }
 }
 
-class KuiComponentNode : KuiNode {
-    private var inner: KuiNode? = null
-
+class KuiComponentNode(private var inner: KuiNode? = null) : KuiNode {
     val isSet get() = inner != null
 
     fun get(): KuiNode = ensureSet()
