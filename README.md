@@ -4,22 +4,37 @@ Pronounced 'KOO-ee' or 'KYU-ee'.
 
 ## What is it?
 
-A Kotlin/JS library for creating component-based user interfaces. With 
-Kui, you can create declarative, stateful, **strongly typed** 
-components that can be composed to create web applications.
+A Kotlin/JS library for creating component-based user interfaces for use in 
+web applications. With Kui, you can create declarative, stateful, **strongly 
+typed** components that can be composed to create rich web applications.
 
-## Example
+## Getting started
+
+Add the kui dependency to your build.gradle
+```groovy
+repositories {
+    // ...
+    maven { url "https://juggernaut0.github.io/m2/repository" }
+}
+dependencies {
+    // ...
+    compile "com.github.juggernaut0.kui:kui:0.3.0"
+}
+```
 
 Creating simple components is easy:
 
-HTML:
+index.html:
 ```html
 <body>
     <div id="app"></div>
+    <script src="js/kotlin.js"></script>
+    <script src="js/kui.js"></script>
+    <script src="js/main.js"></script>
 </body>
 ```
 
-Kotlin:
+Main.kt:
 ```kotlin
 class HelloWorld : kui.Component() {
     override fun render() {
@@ -37,9 +52,7 @@ fun main() {
 Check out the [examples](example/src/main/kotlin) for more advanced 
 usage.
 
-## Getting started
-
-Maven dependency coming soon.
+## Building
 
 To publish locally, clone the project and run 
 `./gradlew publishToMavenLocal`.
@@ -51,7 +64,6 @@ To run tests, first install jest with `npm install jest` or
 
 * Expose more DOM events for elements to react to (mousenter, 
 mouseleave, focus, blur, etc.)
-* Expose more HTML elements
 * Increased test coverage
 * Testing utility library for testing user applications
     * Virtual rendering, shallow renders, snapshot testing etc.

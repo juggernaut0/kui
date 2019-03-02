@@ -17,5 +17,5 @@ abstract class Component {
         internal = false
     }
 
-    protected fun markup(): AbstractMarkupBuilder = RootMarkupBuilder(this, internal)
+    protected fun markup(): MarkupBuilder = RootMarkupBuilder(this, internal)
 }

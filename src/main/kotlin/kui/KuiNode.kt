@@ -170,8 +170,8 @@ class SimpleKuiElement(tag: String, props: Props) : KuiElement(tag, props) {
     }
 }
 
-class InputTextKuiElement(props: Props, private val model: KMutableProperty0<String>?)
-    : KuiElement("input", props.copy(attrs = props.attrs + ("type" to "text"))) {
+class InputTextKuiElement(props: Props, placeholder: String?, private val model: KMutableProperty0<String>?)
+    : KuiElement("input", props.withAttrs("type" to "text", "placeholder" to placeholder)) {
     override fun customizeElement(elem: Element, existing: KuiElement?) {
         if (model != null) {
             (elem as HTMLInputElement).value = model.get()
@@ -180,8 +180,8 @@ class InputTextKuiElement(props: Props, private val model: KMutableProperty0<Str
     }
 }
 
-class InputNumberKuiElement(props: Props, private val model: KMutableProperty0<Double>?)
-    : KuiElement("input", props.copy(attrs = props.attrs + ("type" to "number"))) {
+class InputNumberKuiElement(props: Props, placeholder: String?, private val model: KMutableProperty0<Double>?)
+    : KuiElement("input", props.withAttrs("type" to "number", "placeholder" to placeholder)) {
     override fun customizeElement(elem: Element, existing: KuiElement?) {
         if (model != null) {
             (elem as HTMLInputElement).value = model.get().toString()

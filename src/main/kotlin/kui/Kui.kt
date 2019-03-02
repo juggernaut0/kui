@@ -32,7 +32,7 @@ fun <T> renderOnSet(value: T, target: Component? = null): ReadWriteProperty<Comp
     }
 }
 
-inline fun componentOf(crossinline render: (AbstractMarkupBuilder) -> Unit): Component {
+inline fun componentOf(crossinline render: (MarkupBuilder) -> Unit): Component {
     return object : Component() {
         override fun render() {
             render(markup())
