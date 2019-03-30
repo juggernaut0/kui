@@ -1,6 +1,7 @@
 import kui.mountComponent
 
-fun main(args: Array<String>) {
+fun main() {
     mountComponent("app", TodoListComponent())
     mountComponent("calc", CalcComponent())
+    mountComponent("events", EventsDemo())
 }

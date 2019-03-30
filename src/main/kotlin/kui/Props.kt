@@ -6,7 +6,20 @@ data class Props(
         val title: String? = null,
         val disabled: Boolean = false,
         val attrs: Map<String, String> = emptyMap(),
-        val click: (() -> Unit)? = null
+
+        // events
+        val blur: (() -> Unit)? = null,
+        val click: (() -> Unit)? = null,
+        val focus: (() -> Unit)? = null,
+        val keydown: ((KeyboardEventArgs) -> Unit)? = null,
+        val keyup: ((KeyboardEventArgs) -> Unit)? = null,
+        val mousedown: (() -> Unit)? = null,
+        val mouseup: (() -> Unit)? = null,
+        val mouseenter: (() -> Unit)? = null,
+        val mouseleave: (() -> Unit)? = null,
+        val mousemove: (() -> Unit)? = null,
+
+        val tabIndex: Int? = null
 ) {
     companion object {
         val empty = Props()

@@ -62,9 +62,7 @@ To run tests, first install jest with `npm install jest` or
 
 ## TODOs
 
-* Expose more DOM events for elements to react to (mousenter, 
-mouseleave, focus, blur, etc.)
 * Increased test coverage
 * Testing utility library for testing user applications
     * Virtual rendering, shallow renders, snapshot testing etc.
-* JS interop layer, for use from vanilla JS or TypeScript
+    * Sending dom events to elements
