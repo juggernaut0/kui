@@ -6,7 +6,7 @@ import kotlin.reflect.KMutableProperty0
 @DslMarker
 annotation class MarkupDsl
 
-@Suppress("unused")
+@Suppress("unused", "NOTHING_TO_INLINE")
 @MarkupDsl
 sealed class MarkupBuilder {
     abstract fun add(node: KuiNode)
@@ -88,12 +88,16 @@ sealed class MarkupBuilder {
         add(KuiTextNode(this))
     }
 
-    fun component(component: Component, innerMarkup: (MarkupBuilder.() -> Unit)? = null) {
-        component.innerMarkup = innerMarkup
+    fun component(component: Component) {
         component.renderInternal()
         if (component.rootElement.isSet) {
             add(component.rootElement)
         }
+    }
+
+    inline fun <T> component(component: SlottedComponent<T>, slots: SlotBuilder<T>.() -> Unit) {
+        SlotBuilder(component).apply(slots)
+        component(component)
     }
 }
 
@@ -113,6 +117,16 @@ internal class RootMarkupBuilder(private val component: Component, private val i
 class ElementMarkupBuilder(private val parent: KuiElement) : MarkupBuilder() {
     override fun add(node: KuiNode) {
         parent.addChild(node)
+    }
+}
+
+class SlotBuilder<T>(private val comp: SlottedComponent<T>) {
+    init {
+        comp.shouldClearOnRenderInternal = false
+    }
+
+    fun slot(slot: T, markup: MarkupBuilder.() -> Unit) {
+        comp.slots[slot] = markup
     }
 }
 

@@ -2,20 +2,30 @@ package kui
 
 abstract class Component {
     internal var rootElement = KuiComponentNode()
-    internal var innerMarkup: (MarkupBuilder.() -> Unit)? = null
-    private var internal = false
+    private var internalRender = false
 
     abstract fun render()
 
-    protected fun MarkupBuilder.renderInner() {
-        innerMarkup?.invoke(this)
-    }
-
-    internal fun renderInternal() {
-        internal = true
+    internal open fun renderInternal() {
+        internalRender = true
         render()
-        internal = false
+        internalRender = false
     }
 
-    protected fun markup(): MarkupBuilder = RootMarkupBuilder(this, internal)
+    protected fun markup(): MarkupBuilder = RootMarkupBuilder(this, internalRender)
+}
+
+abstract class SlottedComponent<T> : Component() {
+    internal val slots = mutableMapOf<T, MarkupBuilder.() -> Unit>()
+    internal var shouldClearOnRenderInternal = true
+
+    protected fun MarkupBuilder.slot(slot: T) {
+        slots[slot]?.invoke(this)
+    }
+
+    override fun renderInternal() {
+        if (shouldClearOnRenderInternal) slots.clear()
+        shouldClearOnRenderInternal = true
+        super.renderInternal()
+    }
 }
