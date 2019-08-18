@@ -39,3 +39,8 @@ inline fun componentOf(crossinline render: (MarkupBuilder) -> Unit): Component {
         }
     }
 }
+
+inline fun <T : Component> T.setState(block: T.() -> Unit) {
+    block()
+    render()
+}

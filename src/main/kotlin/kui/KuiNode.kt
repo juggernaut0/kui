@@ -6,6 +6,7 @@ import org.w3c.dom.events.EventListener
 import org.w3c.dom.events.KeyboardEvent
 import kotlin.browser.document
 import kotlin.dom.clear
+import kotlin.js.Date
 import kotlin.reflect.KMutableProperty0
 
 interface KuiNode {
@@ -197,7 +198,7 @@ abstract class KuiElement(private val tag: String, private val props: Props) : K
     }
 
     companion object {
-        private val disableableTags = setOf("button", "input", "select")
+        private val disableableTags = setOf("button", "input", "select", "textarea")
     }
 }
 
@@ -280,6 +281,31 @@ class SelectKuiElement<T>(props: Props, private val options: List<T> = emptyList
             }
         } else {
             clearEventListeners("change", elem, existing)
+        }
+    }
+}
+
+class InputDateKuiElement(props: Props, private val model: KMutableProperty0<Date>?)
+    : KuiElement("input", props.withAttrs("type" to "date")) {
+    override fun customizeElement(elem: Element, existing: KuiElement?) {
+        if (model != null) {
+            (elem as HTMLInputElement).value = model.get().toISODateString()
+            swapEventListener("input", elem, existing) { e ->
+                (e.target as? HTMLInputElement)?.value?.toDateOrNull()?.let { model.set(it) }
+            }
+        } else {
+            clearEventListeners("input", elem, existing)
+        }
+    }
+}
+
+class TextAreaKuiElement(props: Props, private val model: KMutableProperty0<String>?) : KuiElement("textarea", props) {
+    override fun customizeElement(elem: Element, existing: KuiElement?) {
+        if (model != null) {
+            (elem as HTMLTextAreaElement).value = model.get()
+            swapEventListener("input", elem, existing) { e -> (e.target as? HTMLTextAreaElement)?.let { model.set(it.value) } }
+        } else {
+            clearEventListeners("input", elem, existing)
         }
     }
 }

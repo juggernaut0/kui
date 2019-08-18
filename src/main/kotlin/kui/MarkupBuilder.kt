@@ -1,6 +1,7 @@
 package kui
 
 import kui.Props.Companion.empty
+import kotlin.js.Date
 import kotlin.reflect.KMutableProperty0
 
 @DslMarker
@@ -44,6 +45,8 @@ sealed class MarkupBuilder {
             = add(CheckboxKuiElement(props, model))
     fun <T> radio(props: Props = empty, name: String, value: T, model: KMutableProperty0<T>? = null)
             = add(RadioKuiElement(props, name, value, model))
+    fun inputDate(props: Props = empty, model: KMutableProperty0<Date>? = null)
+            = add(InputDateKuiElement(props, model))
 
     inline fun label(props: Props = empty, forId: String? = null, block: MarkupBuilder.() -> Unit) {
         val realProps = if (forId != null) props.copy(attrs = props.attrs + ("for" to forId)) else props
@@ -81,6 +84,8 @@ sealed class MarkupBuilder {
     inline fun tr(props: Props = empty, block: MarkupBuilder.() -> Unit) = htmlElement("tr", props, block)
     inline fun th(props: Props = empty, block: MarkupBuilder.() -> Unit) = htmlElement("th", props, block)
     inline fun td(props: Props = empty, block: MarkupBuilder.() -> Unit) = htmlElement("td", props, block)
+
+    fun textarea(props: Props = empty, model: KMutableProperty0<String>?) = add(TextAreaKuiElement(props, model))
 
     inline fun ul(props: Props = empty, block: MarkupBuilder.() -> Unit) = htmlElement("ul", props, block)
 
