@@ -125,6 +125,7 @@ class ElementMarkupBuilder(private val parent: KuiElement) : MarkupBuilder() {
     }
 }
 
+@MarkupDsl
 class SlotBuilder<T>(private val comp: SlottedComponent<T>) {
     init {
         comp.shouldClearOnRenderInternal = false
