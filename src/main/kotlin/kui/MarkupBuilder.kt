@@ -21,6 +21,7 @@ sealed class MarkupBuilder {
     inline fun a(props: Props = empty, href: String = "#", block: MarkupBuilder.() -> Unit)
             = htmlElement("a", props.copy(attrs = props.attrs + ("href" to href)), block)
     inline fun b(props: Props = empty, block: MarkupBuilder.() -> Unit) = htmlElement("b", props, block)
+    inline fun br(props: Props = empty) = htmlElement("br", props) { }
     inline fun button(props: Props = empty, block: MarkupBuilder.() -> Unit) = htmlElement("button", props, block)
     inline fun code(props: Props = empty, block: MarkupBuilder.() -> Unit) = htmlElement("code", props, block)
     inline fun div(props: Props = empty, block: MarkupBuilder.() -> Unit) = htmlElement("div", props, block)
@@ -39,14 +40,16 @@ sealed class MarkupBuilder {
 
     fun inputText(props: Props = empty, placeholder: String? = null, model: KMutableProperty0<String>? = null)
             = add(InputTextKuiElement(props, placeholder, model))
-    fun inputNumber(props: Props = empty, placeholder: String? = null, model: KMutableProperty0<Double>? = null)
-            = add(InputNumberKuiElement(props, placeholder, model))
+    fun inputNumber(props: Props = empty, placeholder: String? = null, min: Double? = null, max: Double? = null, step: Double? = null, model: KMutableProperty0<Double>? = null)
+            = add(InputNumberKuiElement(props, "number", placeholder, min, max, step, model))
     fun checkbox(props: Props = empty, model: KMutableProperty0<Boolean>? = null)
             = add(CheckboxKuiElement(props, model))
     fun <T> radio(props: Props = empty, name: String, value: T, model: KMutableProperty0<T>? = null)
             = add(RadioKuiElement(props, name, value, model))
     fun inputDate(props: Props = empty, model: KMutableProperty0<Date>? = null)
             = add(InputDateKuiElement(props, model))
+    fun inputRange(props: Props = empty, min: Double? = null, max: Double? = null, step: Double? = null, model: KMutableProperty0<Double>? = null)
+            = add(InputNumberKuiElement(props, "range", null, min, max, step, model))
 
     inline fun label(props: Props = empty, forId: String? = null, block: MarkupBuilder.() -> Unit) {
         val realProps = if (forId != null) props.copy(attrs = props.attrs + ("for" to forId)) else props

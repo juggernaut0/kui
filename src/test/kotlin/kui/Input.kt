@@ -67,4 +67,28 @@ class Input {
         inputElem2.setValue("5 6 7 8")
         assertEquals("5 6 7 8", comp.value)
     }
+
+    @Test
+    fun range() {
+        val elem = document.createElement("div")
+        val comp = object : Component() {
+            var value = 50.0
+            override fun render() {
+                markup().inputRange(Props(id = "x"), min = 0.0, max = 100.0, model = ::value)
+            }
+        }
+        mountComponent(elem, comp)
+
+        val inputElem = elem.querySelector("#x") as HTMLInputElement
+        assertEquals("50", inputElem.value)
+
+        comp.value = 75.0
+        comp.render()
+
+        val inputElem2 = elem.querySelector("#x") as HTMLInputElement
+        assertEquals("75", inputElem2.value)
+
+        inputElem2.setValue("25")
+        assertEquals(25.0, comp.value)
+    }
 }

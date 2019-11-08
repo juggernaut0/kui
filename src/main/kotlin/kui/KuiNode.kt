@@ -220,8 +220,21 @@ class InputTextKuiElement(props: Props, placeholder: String?, private val model:
     }
 }
 
-class InputNumberKuiElement(props: Props, placeholder: String?, private val model: KMutableProperty0<Double>?)
-    : KuiElement("input", props.withAttrs("type" to "number", "placeholder" to placeholder)) {
+class InputNumberKuiElement(
+        props: Props,
+        type: String,
+        placeholder: String?,
+        min: Double?,
+        max: Double?,
+        step: Double?,
+        private val model: KMutableProperty0<Double>?
+) : KuiElement("input", props.withAttrs(
+        "type" to type,
+        "placeholder" to placeholder,
+        "min" to min?.toString(),
+        "max" to max?.toString(),
+        "step" to step?.toString()
+)) {
     override fun customizeElement(elem: Element, existing: KuiElement?) {
         if (model != null) {
             (elem as HTMLInputElement).value = model.get().toString()
