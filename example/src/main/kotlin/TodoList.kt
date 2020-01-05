@@ -1,6 +1,4 @@
-import kui.Component
-import kui.Props
-import kui.renderOnSet
+import kui.*
 
 class TodoListComponent : Component() {
     private var nextItem: String = ""
@@ -24,11 +22,15 @@ class TodoListComponent : Component() {
         markup().div {
             inputText(model = ::nextItem)
             button(Props(click = ::addItem)) { +"Add Item" }
-            p {
+            p(classes(TodoStyles.greenSmall)) {
                 +"Size: ${items.size}"
             }
             select(options = items, model = ::selectedItem, nullOption = "None")
-            button(Props(click = ::removeItem, disabled = selectedItem == null)) { +"Delete" }
+            button(Props(
+                    classes = if (selectedItem == null) emptyList() else listOf(TodoStyles.red),
+                    click = ::removeItem,
+                    disabled = selectedItem == null
+            )) { +"Delete" }
             ul {
                 for(item in items) {
                     component(TodoListItemComponent(item))
@@ -51,9 +53,22 @@ class TodoListItemComponent(private val item: TodoListItem) : Component() {
     override fun render() {
         markup().li {
             checkbox(model = ::checked)
-            span(Props(classes = if (checked) listOf("line-through") else emptyList())) {
+            span(Props(classes = if (checked) listOf(TodoStyles.lineThrough) else emptyList())) {
                 +item.content
             }
+        }
+    }
+}
+
+object TodoStyles {
+    val red by styleClass { "color: red;" }
+    val lineThrough by styleClass { "text-decoration: line-through; color: #666" }
+    val greenSmall by mediaStyleClass {
+        media("only screen and (max-width: 900px)") {
+            "color: green;"
+        }
+        default {
+            "color: black;"
         }
     }
 }
