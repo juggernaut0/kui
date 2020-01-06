@@ -38,8 +38,10 @@ sealed class MarkupBuilder {
     fun img(props: Props = empty, src: String? = null, alt: String? = null)
             = htmlElement("img", props.withAttrs("src" to src, "alt" to alt)) { }
 
-    fun inputText(props: Props = empty, placeholder: String? = null, model: KMutableProperty0<String>? = null)
-            = add(InputTextKuiElement(props, placeholder, model))
+    fun inputText(props: Props = empty, placeholder: String? = null, autocomplete: String? = null, model: KMutableProperty0<String>? = null)
+            = add(InputTextKuiElement(props, "text", placeholder, autocomplete, model))
+    fun inputPassword(props: Props = empty, placeholder: String? = null, autocomplete: String? = null, model: KMutableProperty0<String>? = null)
+            = add(InputTextKuiElement(props, "password", placeholder, autocomplete, model))
     fun inputNumber(props: Props = empty, placeholder: String? = null, min: Double? = null, max: Double? = null, step: Double? = null, model: KMutableProperty0<Double>? = null)
             = add(InputNumberKuiElement(props, "number", placeholder, min, max, step, model))
     fun checkbox(props: Props = empty, model: KMutableProperty0<Boolean>? = null)

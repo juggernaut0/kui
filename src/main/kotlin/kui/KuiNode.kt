@@ -208,8 +208,8 @@ class SimpleKuiElement(tag: String, props: Props) : KuiElement(tag, props) {
     }
 }
 
-class InputTextKuiElement(props: Props, placeholder: String?, private val model: KMutableProperty0<String>?)
-    : KuiElement("input", props.withAttrs("type" to "text", "placeholder" to placeholder)) {
+class InputTextKuiElement(props: Props, type: String, placeholder: String?, autocomplete: String?, private val model: KMutableProperty0<String>?)
+    : KuiElement("input", props.withAttrs("type" to type, "placeholder" to placeholder, "autocomplete" to autocomplete)) {
     override fun customizeElement(elem: Element, existing: KuiElement?) {
         if (model != null) {
             (elem as HTMLInputElement).value = model.get()
