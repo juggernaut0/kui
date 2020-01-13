@@ -5,6 +5,7 @@ data class Props(
         val classes: List<String> = emptyList(),
         val title: String? = null,
         val disabled: Boolean = false,
+        val tabIndex: Int? = null,
         val attrs: Map<String, String> = emptyMap(),
 
         // events
@@ -19,7 +20,7 @@ data class Props(
         val mouseleave: (() -> Unit)? = null,
         val mousemove: (() -> Unit)? = null,
 
-        val tabIndex: Int? = null
+        val ref: ElementRef? = null
 ) {
     companion object {
         val empty = Props()

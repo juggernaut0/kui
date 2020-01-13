@@ -149,6 +149,10 @@ abstract class KuiElement(private val tag: String, private val props: Props) : K
             }
         }
 
+        if (props.ref != null) {
+            props.ref.set(elem)
+        }
+
         customizeElement(elem, existing)
 
         element = elem
