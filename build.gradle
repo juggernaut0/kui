@@ -40,6 +40,12 @@ publishing {
             artifact sourceJar
         }
     }
+    repositories {
+        maven {
+            name = "build"
+            url = uri("$buildDir/repo")
+        }
+    }
 }
 
 [compileKotlin2Js, compileTestKotlin2Js]*.configure {
@@ -58,6 +64,7 @@ task populateNodeModules(type: Copy, dependsOn: compileKotlin2Js) {
 
 node {
     download = true
+    version = "12.14.1"
 }
 
 task installJest(type: NpmTask) {
