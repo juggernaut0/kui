@@ -1,6 +1,6 @@
 package kui
 
-fun <T> diff(first: List<T>, second: List<T>, eq: (T, T) -> Boolean = { x, y -> x == y }): List<Diff<T>> {
+internal fun <T> diff(first: List<T>, second: List<T>, eq: (T, T) -> Boolean = { x, y -> x == y }): List<Diff<T>> {
     val a = first.asReversed()
     val b = second.asReversed()
     val mat = Array(a.size) { IntArray(b.size) }
@@ -64,10 +64,10 @@ fun <T> diff(first: List<T>, second: List<T>, eq: (T, T) -> Boolean = { x, y -> 
 
 internal enum class Ptr { EMPTY, UP, LEFT, DIAG }
 
-sealed class Diff<T>
-data class Added<T>(val new: T) : Diff<T>()
-data class Removed<T>(val old: T) : Diff<T>()
-data class Unchanged<T>(val old: T, val new: T) : Diff<T>()
+internal sealed class Diff<T>
+internal data class Added<T>(val new: T) : Diff<T>()
+internal data class Removed<T>(val old: T) : Diff<T>()
+internal data class Unchanged<T>(val old: T, val new: T) : Diff<T>()
 
 internal infix fun <T, U> Iterable<T>.product(that: Iterable<U>): List<Pair<T, U>> {
     val result = mutableListOf<Pair<T, U>>()

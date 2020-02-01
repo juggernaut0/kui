@@ -26,19 +26,18 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 1.8
-    - name: Build Publication
-      run: ./gradlew publishMavenPublicationToBuildRepository
     - uses: actions/checkout@master
       with:
         repository: juggernaut0/juggernaut0.github.io
-        path: repo
+        path: pages
         token: ${{ secrets.PUBLISH_TOKEN }}
     - name: Publish
       run: |
-        cp -r build/repo/* repo/m2/repository
-        cd repo
+        ./gradlew publishMavenPublicationToPagesRepository dokka
+        cp -r build/dokka pages/docs
+        cd pages
         git checkout -b kui-${{ github.sha }}
-        git add m2
+        git add m2 docs
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
         git commit -m "Update kui"

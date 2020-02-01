@@ -18,7 +18,7 @@ repositories {
 }
 dependencies {
     // ...
-    compile "com.github.juggernaut0.kui:kui:0.6.1"
+    compile "com.github.juggernaut0.kui:kui:0.9.1"
 }
 ```
 
@@ -36,21 +36,21 @@ index.html:
 
 Main.kt:
 ```kotlin
-class HelloWorld : kui.Component() {
+class HelloWorld(private val name: String) : kui.Component() {
     override fun render() {
         markup().p {
-            +"Hello, World!"
+            +"Hello, $name!"
         }
     }
 }
 
 fun main() {
-    kui.mountComponent("app", HelloWorld())
+    kui.mountComponent("app", HelloWorld("World"))
 }
 ```
 
-Check out the [examples](example/src/main/kotlin) for more advanced 
-usage.
+Check out the [usage guide](/docs/usage.md), [api docs](https://juggernaut0.github.io/docs/kui) and 
+[examples](example/src/main/kotlin) for more advanced usage.
 
 ## Building
 
