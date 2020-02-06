@@ -1,0 +1,37 @@
+plugins {
+    id "org.jetbrains.kotlin.js"
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile project(":")
+    compile "org.jetbrains.kotlin:kotlin-stdlib-js"
+    testCompile "org.jetbrains.kotlin:kotlin-test-js"
+}
+
+task assembleWeb(type: Copy, dependsOn: mainClasses) {
+    configurations.compile.each { File file ->
+        from(zipTree(file.absolutePath), {
+            includeEmptyDirs = false
+            include { fileTreeElement ->
+                def path = fileTreeElement.path
+                path.endsWith(".js")
+            }
+        })
+    }
+    from compileKotlinJs.destinationDir
+    include '**/*.js'
+    includeEmptyDirs false
+    into "${projectDir}/build/web/js"
+}
+
+task copyStaticWeb(type: Copy) {
+    from 'static'
+    exclude 'test.html'
+    into "${projectDir}/build/web"
+}
+
+assemble.dependsOn(assembleWeb, copyStaticWeb)

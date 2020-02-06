@@ -14,6 +14,24 @@ utilities commonly used in patterns such as dependency injection or MVP. As such
 your favorite tools and libraries. It can even be used in conjunction with other popular UI frameworks such as React 
 AngularJS.
 
+This document describes the general usage of the library. For examples, check out the 
+[example](../example/src/main/kotlin) project. For usage of the testing utility library, check out the 
+[Testing Usage](testing.md) document.
+
+## Project setup
+
+Add the kui dependency to your build.gradle
+```groovy
+repositories {
+    // ...
+    maven { url "https://juggernaut0.github.io/m2/repository" }
+}
+dependencies {
+    // ...
+    compile "com.github.juggernaut0.kui:kui:0.10.0"
+}
+```
+
 ## Components
 
 The core concept of Kui is that of *components*, objects that represent the state of some part of the UI. Components 

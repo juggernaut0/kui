@@ -1,7 +1,8 @@
 package kui
 
+import kui.test.assertMatchesHtml
+import kui.test.render
 import org.w3c.dom.HTMLButtonElement
-import kotlin.browser.document
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -10,7 +11,7 @@ import kotlin.test.assertTrue
 class EventTest {
     @Test
     fun removeListener() {
-        val comp = object : Component() {
+        val comp = render(object : Component() {
             var disabled = false
             var count = 0
 
@@ -27,25 +28,22 @@ class EventTest {
                     markup().button(Props(click = { handleClick() })) { +"click" }
                 }
             }
-        }
+        })
 
-        val elem = document.createElement("div")
-        mountComponent(elem, comp)
+        assertMatchesHtml("<button>click</button>", comp)
+        assertFalse(comp.component.disabled)
+        assertEquals(0, comp.component.count)
 
-        assertEquals("<button>click</button>", elem.innerHTML)
-        assertFalse(comp.disabled)
-        assertEquals(0, comp.count)
-
-        val button = elem.firstElementChild!! as HTMLButtonElement
+        val button = comp.getBySelector("button") as HTMLButtonElement
         button.click()
 
-        assertTrue(comp.disabled)
-        assertEquals(1, comp.count)
+        assertTrue(comp.component.disabled)
+        assertEquals(1, comp.component.count)
 
-        val button2 = elem.firstElementChild!! as HTMLButtonElement
+        val button2 = comp.getBySelector("button") as HTMLButtonElement
         button2.click()
 
-        assertTrue(comp.disabled)
-        assertEquals(1, comp.count)
+        assertTrue(comp.component.disabled)
+        assertEquals(1, comp.component.count)
     }
 }

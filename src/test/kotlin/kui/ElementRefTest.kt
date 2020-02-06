@@ -1,6 +1,6 @@
 package kui
 
-import kotlin.browser.document
+import kui.test.render
 import kotlin.test.Test
 import kotlin.test.assertFails
 import kotlin.test.assertSame
@@ -22,9 +22,8 @@ class ElementRefTest {
             comp.ref.get()
         }
 
-        val root = document.createElement("div")
-        mountComponent(root, comp)
+        val rendered = render(comp)
 
-        assertSame(root.querySelector("#target"), comp.ref.get())
+        assertSame(rendered.getBySelector("#target"), comp.ref.get())
     }
 }

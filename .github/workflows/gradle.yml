@@ -34,7 +34,7 @@ jobs:
     - name: Publish
       run: |
         ./gradlew publishMavenPublicationToPagesRepository dokka
-        cp -r build/dokka pages/docs
+        cp -r build/dokka/* kui-test/build/dokka/kui-test pages/docs
         cd pages
         git checkout -b kui-${{ github.sha }}
         git add m2 docs

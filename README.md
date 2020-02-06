@@ -18,23 +18,12 @@ repositories {
 }
 dependencies {
     // ...
-    compile "com.github.juggernaut0.kui:kui:0.9.1"
+    compile "com.github.juggernaut0.kui:kui:0.10.0"
 }
 ```
 
 Creating simple components is easy:
 
-index.html:
-```html
-<body>
-    <div id="app"></div>
-    <script src="js/kotlin.js"></script>
-    <script src="js/kui.js"></script>
-    <script src="js/main.js"></script>
-</body>
-```
-
-Main.kt:
 ```kotlin
 class HelloWorld(private val name: String) : kui.Component() {
     override fun render() {
@@ -45,11 +34,11 @@ class HelloWorld(private val name: String) : kui.Component() {
 }
 
 fun main() {
-    kui.mountComponent("app", HelloWorld("World"))
+    kui.mountComponent(document.body!!, HelloWorld("World"))
 }
 ```
 
-Check out the [usage guide](/docs/usage.md), [api docs](https://juggernaut0.github.io/docs/kui) and 
+Check out the [usage guide](/docs/usage.md), [api docs](https://juggernaut0.github.io/docs/kui/index.html) and 
 [examples](example/src/main/kotlin) for more advanced usage.
 
 ## Building
@@ -62,7 +51,6 @@ To run tests, first install jest with `npm install jest` or
 
 ## TODOs
 
-* Increased test coverage
-* Testing utility library for testing user applications
-    * Virtual rendering, shallow renders, snapshot testing etc.
-    * Sending dom events to elements
+* Improve testing utility library for testing user applications
+    * Virtual rendering
+    * Shallow renders

@@ -1,6 +1,7 @@
 package kui
 
-import kotlin.browser.document
+import kui.test.assertMatchesHtml
+import kui.test.render
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertSame
@@ -42,9 +43,8 @@ class RepeatedChildren {
 
     @Test
     fun addTwiceRemoveTwice() {
-        val elem = document.createElement("div")
-        val comp = Outer()
-        mountComponent(elem, comp)
+        val rendered = render(Outer())
+        val comp = rendered.component
 
         comp.add()
         comp.add()
@@ -53,7 +53,7 @@ class RepeatedChildren {
         val child1 = comp.rootElement.node?.childNodes?.item(1)
 
         assertEquals(2, comp.inners.size)
-        assertEquals("<div><p>0</p><p>1</p></div>", elem.innerHTML)
+        assertMatchesHtml("<div><p>0</p><p>1</p></div>", rendered)
         assertSame(child0, comp.inners[0].rootElement.node)
         assertSame(child1, comp.inners[1].rootElement.node)
 
@@ -62,12 +62,12 @@ class RepeatedChildren {
         val child0a = comp.rootElement.node?.childNodes?.item(0)
 
         assertEquals(1, comp.inners.size)
-        assertEquals("<div><p>1</p></div>", elem.innerHTML)
+        assertMatchesHtml("<div><p>1</p></div>", rendered)
         assertSame(child0a, comp.inners[0].rootElement.node)
 
         comp.remove(comp.inners[0])
 
         assertEquals(0, comp.inners.size)
-        assertEquals("<div></div>", elem.innerHTML)
+        assertMatchesHtml("<div></div>", rendered)
     }
 }

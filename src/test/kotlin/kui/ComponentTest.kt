@@ -1,52 +1,46 @@
 package kui
 
+import kui.test.assertMatchesHtml
+import kui.test.render
 import org.w3c.dom.HTMLButtonElement
-import org.w3c.dom.get
-import kotlin.browser.document
 import kotlin.test.Test
-import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 class ComponentTest {
     @Test
     fun simple() {
-        val elem = document.createElement("div")
-        val comp = componentOf {
+        val comp = render(componentOf {
             it.div {
                 +"Hello World"
             }
-        }
-        mountComponent(elem, comp)
+        })
 
-        assertEquals("<div>Hello World</div>", elem.innerHTML)
+        assertMatchesHtml("<div>Hello World</div>", comp)
     }
 
     @Test
     fun interact() {
-        val elem = document.createElement("div")
-        val comp = object : Component() {
+        val comp = render(object : Component() {
             var clicked = false
 
             override fun render() {
                 markup().button(Props(click = { clicked = true })) { +"Click me" }
             }
-        }
-        mountComponent(elem, comp)
+        })
 
-        assertEquals("<button>Click me</button>", elem.innerHTML)
-        assertFalse(comp.clicked)
+        assertMatchesHtml("<button>Click me</button>", comp)
+        assertFalse(comp.component.clicked)
 
-        val button = elem.firstElementChild!! as HTMLButtonElement
+        val button = comp.getBySelector("button") as HTMLButtonElement
         button.click()
 
-        assertTrue(comp.clicked)
+        assertTrue(comp.component.clicked)
     }
 
     @Test
     fun state() {
-        val elem = document.createElement("div")
-        val comp = object : Component() {
+        val comp = render(object : Component() {
             var i = 0
 
             fun inc() {
@@ -60,19 +54,18 @@ class ComponentTest {
                     button(Props(id = "btn", click = { inc() })) { +"Inc" }
                 }
             }
-        }
-        mountComponent(elem, comp)
+        })
 
-        assertEquals("<div><p>0</p><button id=\"btn\">Inc</button></div>", elem.innerHTML)
+        assertMatchesHtml("<div><p>0</p><button id=\"btn\">Inc</button></div>", comp)
 
-        var button = elem.querySelector("#btn") as HTMLButtonElement
+        var button = comp.getBySelector("#btn") as HTMLButtonElement
         button.click()
 
-        assertEquals("<div><p>1</p><button id=\"btn\">Inc</button></div>", elem.innerHTML)
+        assertMatchesHtml("<div><p>1</p><button id=\"btn\">Inc</button></div>", comp)
 
-        button = elem.querySelector("#btn") as HTMLButtonElement
+        button = comp.getBySelector("#btn") as HTMLButtonElement
         button.click()
 
-        assertEquals("<div><p>2</p><button id=\"btn\">Inc</button></div>", elem.innerHTML)
+        assertMatchesHtml("<div><p>2</p><button id=\"btn\">Inc</button></div>", comp)
     }
 }

@@ -1,8 +1,8 @@
 package kui
 
-import kotlin.browser.document
+import kui.test.assertMatchesHtml
+import kui.test.render
 import kotlin.test.Test
-import kotlin.test.assertEquals
 
 class SlotsTest {
     @Test
@@ -24,10 +24,7 @@ class SlotsTest {
             }
         }
 
-        val elem = document.createElement("div")
-        mountComponent(elem, root)
-
-        assertEquals("<div><h1>Some title</h1><p>Hello world</p><small>Some footer</small></div>", elem.innerHTML)
+        assertMatchesHtml("<div><h1>Some title</h1><p>Hello world</p><small>Some footer</small></div>", render(root))
     }
 
     @Test
@@ -54,9 +51,6 @@ class SlotsTest {
             }
         }
 
-        val elem = document.createElement("div")
-        mountComponent(elem, root)
-
-        assertEquals("<div><h1>Some title</h1><p>Hello world</p><h2>Subtitle</h2><p>Body</p><small>Some footer</small></div>", elem.innerHTML)
+        assertMatchesHtml("<div><h1>Some title</h1><p>Hello world</p><h2>Subtitle</h2><p>Body</p><small>Some footer</small></div>", render(root))
     }
 }

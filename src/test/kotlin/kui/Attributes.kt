@@ -1,14 +1,13 @@
 package kui
 
-import kotlin.browser.document
+import kui.test.assertMatchesHtml
+import kui.test.render
 import kotlin.test.Test
-import kotlin.test.assertEquals
 
 class Attributes {
     @Test
     fun replaceAttrs() {
-        val elem = document.createElement("div")
-        val comp = object : Component() {
+        val comp = render(object : Component() {
             var state = true
 
             override fun render() {
@@ -20,19 +19,20 @@ class Attributes {
                     }
                 }
             }
+        })
+
+        assertMatchesHtml("<div><button data-foo=\"1\">Foo</button></div>", comp)
+
+        comp.setState {
+            state = false
         }
-        mountComponent(elem, comp)
 
-        assertEquals("<div><button data-foo=\"1\">Foo</button></div>", elem.innerHTML)
+        assertMatchesHtml("<div><button>Bar</button></div>", comp)
 
-        comp.state = false
-        comp.render()
+        comp.setState {
+            state = true
+        }
 
-        assertEquals("<div><button>Bar</button></div>", elem.innerHTML)
-
-        comp.state = true
-        comp.render()
-
-        assertEquals("<div><button data-foo=\"1\">Foo</button></div>", elem.innerHTML)
+        assertMatchesHtml("<div><button data-foo=\"1\">Foo</button></div>", comp)
     }
 }
