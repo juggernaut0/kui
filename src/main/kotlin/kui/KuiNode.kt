@@ -163,7 +163,13 @@ abstract class KuiElement(private val tag: String, private val props: Props) : K
 
     protected fun swapEventListener(event: String, elem: Element, existing: KuiElement?, newListener: (Event) -> Unit) {
         clearEventListeners(event, elem, existing)
-        val listener = EventListener(newListener)
+        val listener = object : EventListener {
+            override fun handleEvent(event: Event) {
+                // TODO support bubbling
+                event.stopPropagation()
+                newListener(event)
+            }
+        }
         events[event] = listener
         elem.addEventListener(event, listener)
     }

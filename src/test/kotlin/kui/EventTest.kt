@@ -46,4 +46,29 @@ class EventTest {
         assertTrue(comp.component.disabled)
         assertEquals(1, comp.component.count)
     }
+
+    @Test
+    fun stopPropagation() {
+        val comp = render(object : Component() {
+            var parentClicked = false
+            var childClicked = false
+
+            override fun render() {
+                markup().div(Props(click = { parentClicked = true })) {
+                    div {
+                        +"Hello"
+                        button(Props(id = "child", click = { childClicked = true })) {
+                            +"Inner"
+                        }
+                    }
+                }
+            }
+        })
+
+        val child = comp.getBySelector("#child") as HTMLButtonElement
+        child.click()
+
+        assertTrue(comp.component.childClicked)
+        assertFalse(comp.component.parentClicked)
+    }
 }

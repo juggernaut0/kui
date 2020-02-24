@@ -152,8 +152,9 @@ override fun render() {
 A shorthand for `Props(classes = listOf(...))` is provided by the `classes` function. For example, the expression 
 `classes("a", "b")` is equivalent to `Props(classes = listOf("a", "b"))`.
 
-**Note**: It is recommended to always use the named parameter syntax for clarity and safety. The order of the 
-parameters in `Props` may change between minor releases.
+**Note**: It is recommended to always use the named parameter syntax for clarity and safety.
+
+**Note**: All Kui event handlers stop event propagation.
 
 ### Data binding
 

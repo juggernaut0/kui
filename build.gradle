@@ -7,7 +7,7 @@ plugins {
 
 allprojects {
     group 'com.github.juggernaut0.kui'
-    version '0.10.0'
+    version '0.10.1'
 
     repositories {
         mavenLocal()
@@ -44,7 +44,11 @@ publishing {
 }
 
 tasks.withType(org.jetbrains.kotlin.gradle.tasks.Kotlin2JsCompile) {
-    kotlinOptions.moduleKind = "umd"
+    kotlinOptions {
+        moduleKind = "umd"
+        sourceMap = true
+        sourceMapEmbedSources = "always"
+    }
 }
 
 task populateNodeModules(type: Copy, dependsOn: compileTestKotlinJs) {
@@ -68,8 +72,8 @@ task installJest(type: NpmTask) {
     args = ['install', 'jest']
 }
 
-task runJest(type: NodeTask, dependsOn: [compileTestKotlinJs, populateNodeModules]) {
-    script = file('node_modules/jest/bin/jest.js')
+task runJest(type: NpxTask, dependsOn: [compileTestKotlinJs, populateNodeModules]) {
+    command = "jest"
     args = [projectDir.toURI().relativize(compileTestKotlinJs.outputFile.toURI())]
 }
 
