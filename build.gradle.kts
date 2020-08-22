@@ -32,16 +32,11 @@ dependencies {
     testImplementation(project(":kui-test"))
 }
 
-val sourceJar = tasks.register<Jar>("sourceJar") {
-    from(kotlin.sourceSets.main.map { it.kotlin })
-    archiveClassifier.set("sources")
-}
-
 publishing {
     publications {
         create<MavenPublication>("maven") {
-            artifact(tasks.named<Jar>("jsJar"))
-            artifact(sourceJar)
+            artifact(tasks.named("jsJar"))
+            artifact(tasks.named("kotlinSourcesJar"))
         }
     }
 
