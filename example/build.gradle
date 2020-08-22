@@ -7,31 +7,22 @@ repositories {
 }
 
 dependencies {
-    compile project(":")
-    compile "org.jetbrains.kotlin:kotlin-stdlib-js"
-    testCompile "org.jetbrains.kotlin:kotlin-test-js"
+    implementation project(":")
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-js"
+    testImplementation "org.jetbrains.kotlin:kotlin-test-js"
 }
 
-task assembleWeb(type: Copy, dependsOn: mainClasses) {
-    configurations.compile.each { File file ->
-        from(zipTree(file.absolutePath), {
-            includeEmptyDirs = false
-            include { fileTreeElement ->
-                def path = fileTreeElement.path
-                path.endsWith(".js")
-            }
-        })
+kotlin {
+    js {
+        browser()
     }
-    from compileKotlinJs.destinationDir
-    include '**/*.js'
-    includeEmptyDirs false
-    into "${projectDir}/build/web/js"
 }
 
 task copyStaticWeb(type: Copy) {
+    dependsOn(browserDevelopmentWebpack)
     from 'static'
-    exclude 'test.html'
+    from browserDevelopmentWebpack.outputFile
     into "${projectDir}/build/web"
 }
 
-assemble.dependsOn(assembleWeb, copyStaticWeb)
+assemble.dependsOn(copyStaticWeb)

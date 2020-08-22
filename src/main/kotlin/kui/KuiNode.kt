@@ -4,8 +4,8 @@ import org.w3c.dom.*
 import org.w3c.dom.events.Event
 import org.w3c.dom.events.EventListener
 import org.w3c.dom.events.KeyboardEvent
-import kotlin.browser.document
-import kotlin.dom.clear
+import kotlinx.browser.document
+import kotlinx.dom.clear
 import kotlin.js.Date
 import kotlin.reflect.KMutableProperty0
 

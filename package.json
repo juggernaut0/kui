@@ -1,5 +1,0 @@
-{
-  "jest": {
-    "testRegex": "_test\\.js$"
-  }
-}
