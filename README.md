@@ -18,7 +18,7 @@ repositories {
 }
 dependencies {
     // ...
-    compile "com.github.juggernaut0.kui:kui:0.10.0"
+    compile "com.github.juggernaut0.kui:kui:0.11.0"
 }
 ```
 
@@ -46,8 +46,7 @@ Check out the [usage guide](/docs/usage.md), [api docs](https://juggernaut0.gith
 To publish locally, clone the project and run 
 `./gradlew publishToMavenLocal`.
 
-To run tests, first install jest with `npm install jest` or 
-`./gradlew installJest`. The run the tests with `./gradlew build`.
+To run tests, firefox headless is currently required. Once installed, run the tests with `./gradlew build`.
 
 ## TODOs
 

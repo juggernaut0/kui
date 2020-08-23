@@ -6,7 +6,7 @@ import org.w3c.dom.EventInit
 import org.w3c.dom.HTMLElement
 import org.w3c.dom.asList
 import org.w3c.dom.events.Event
-import kotlin.browser.document
+import kotlinx.browser.document
 import kotlin.test.assertEquals
 
 fun <T: Component> render(component: T): RenderedComponent<T> {
