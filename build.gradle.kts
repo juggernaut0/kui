@@ -6,7 +6,7 @@ plugins {
 
 allprojects {
     group = "com.github.juggernaut0.kui"
-    version = "0.11.0-SNAPSHOT"
+    version = "0.11.0"
 
     repositories {
         mavenLocal()

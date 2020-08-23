@@ -28,7 +28,7 @@ repositories {
 }
 dependencies {
     // ...
-    compile "com.github.juggernaut0.kui:kui:0.10.0"
+    compile "com.github.juggernaut0.kui:kui:0.11.0"
 }
 ```
 
