@@ -223,7 +223,11 @@ class InputTextKuiElement(props: Props, type: String, placeholder: String?, auto
     override fun customizeElement(elem: Element, existing: KuiElement?) {
         if (model != null) {
             (elem as HTMLInputElement).value = model.get()
-            swapEventListener("input", elem, existing) { e -> (e.target as? HTMLInputElement)?.let { model.set(it.value) } }
+            swapEventListener("input", elem, existing) { e ->
+                val target = e.target as? HTMLInputElement ?: return@swapEventListener
+                model.set(target.value)
+                target.value = model.get() // model may have custom setter; make sure value matches model
+            }
         } else {
             clearEventListeners("input", elem, existing)
         }

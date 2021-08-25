@@ -2,16 +2,6 @@ package kui
 
 import kotlin.js.Date
 
-internal fun Props.withAttrs(vararg attrs: Pair<String, String?>): Props {
-    val a = mutableMapOf<String, String>()
-    for ((name, value) in attrs) {
-        if (value != null) {
-            a[name] = value
-        }
-    }
-    return if (a.isNotEmpty()) copy(attrs = this.attrs + a) else this
-}
-
 internal fun Date.toISODateString(): String {
     val mm = (getMonth() + 1).toString().padStart(2, '0')
     val dd = getDate().toString().padStart(2, '0')

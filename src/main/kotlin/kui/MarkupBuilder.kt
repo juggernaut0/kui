@@ -18,11 +18,14 @@ sealed class MarkupBuilder {
         add(elem)
     }
 
-    inline fun a(props: Props = empty, href: String = "#", block: MarkupBuilder.() -> Unit)
-            = htmlElement("a", props.copy(attrs = props.attrs + ("href" to href)), block)
+    inline fun a(props: Props = empty, href: String? = null, target: String? = null, block: MarkupBuilder.() -> Unit)
+            = htmlElement("a", props.withAttrs("href" to href, "target" to target), block)
     inline fun b(props: Props = empty, block: MarkupBuilder.() -> Unit) = htmlElement("b", props, block)
     inline fun br(props: Props = empty) = htmlElement("br", props) { }
     inline fun button(props: Props = empty, block: MarkupBuilder.() -> Unit) = htmlElement("button", props, block)
+    inline fun canvas(props: Props = empty, width: Int, height: Int, block: MarkupBuilder.() -> Unit) {
+        htmlElement("canvas", props.withAttrs("width" to width.toString(), "height" to height.toString()), block)
+    }
     inline fun code(props: Props = empty, block: MarkupBuilder.() -> Unit) = htmlElement("code", props, block)
     inline fun div(props: Props = empty, block: MarkupBuilder.() -> Unit) = htmlElement("div", props, block)
     inline fun em(props: Props = empty, block: MarkupBuilder.() -> Unit) = htmlElement("em", props, block)
@@ -35,35 +38,31 @@ sealed class MarkupBuilder {
     inline fun h6(props: Props = empty, block: MarkupBuilder.() -> Unit) = htmlElement("h6", props, block)
     inline fun hr(props: Props = empty) = htmlElement("hr", props) { }
     inline fun i(props: Props = empty, block: MarkupBuilder.() -> Unit) = htmlElement("i", props, block)
-    fun img(props: Props = empty, src: String? = null, alt: String? = null)
+    inline fun img(props: Props = empty, src: String? = null, alt: String? = null)
             = htmlElement("img", props.withAttrs("src" to src, "alt" to alt)) { }
-
-    fun inputText(props: Props = empty, placeholder: String? = null, autocomplete: String? = null, model: KMutableProperty0<String>? = null)
+    inline fun inputText(props: Props = empty, placeholder: String? = null, autocomplete: String? = null, model: KMutableProperty0<String>? = null)
             = add(InputTextKuiElement(props, "text", placeholder, autocomplete, model))
-    fun inputPassword(props: Props = empty, placeholder: String? = null, autocomplete: String? = null, model: KMutableProperty0<String>? = null)
+    inline fun inputPassword(props: Props = empty, placeholder: String? = null, autocomplete: String? = null, model: KMutableProperty0<String>? = null)
             = add(InputTextKuiElement(props, "password", placeholder, autocomplete, model))
-    fun inputNumber(props: Props = empty, placeholder: String? = null, min: Double? = null, max: Double? = null, step: Double? = null, model: KMutableProperty0<Double>? = null)
+    inline fun inputNumber(props: Props = empty, placeholder: String? = null, min: Double? = null, max: Double? = null, step: Double? = null, model: KMutableProperty0<Double>? = null)
             = add(InputNumberKuiElement(props, "number", placeholder, min, max, step, model))
-    fun checkbox(props: Props = empty, model: KMutableProperty0<Boolean>? = null)
+    inline fun checkbox(props: Props = empty, model: KMutableProperty0<Boolean>? = null)
             = add(CheckboxKuiElement(props, model))
-    fun <T> radio(props: Props = empty, name: String, value: T, model: KMutableProperty0<T>? = null)
+    inline fun <T> radio(props: Props = empty, name: String, value: T, model: KMutableProperty0<T>? = null)
             = add(RadioKuiElement(props, name, value, model))
-    fun inputDate(props: Props = empty, model: KMutableProperty0<Date>? = null)
+    inline fun inputDate(props: Props = empty, model: KMutableProperty0<Date>? = null)
             = add(InputDateKuiElement(props, model))
-    fun inputRange(props: Props = empty, min: Double? = null, max: Double? = null, step: Double? = null, model: KMutableProperty0<Double>? = null)
+    inline fun inputRange(props: Props = empty, min: Double? = null, max: Double? = null, step: Double? = null, model: KMutableProperty0<Double>? = null)
             = add(InputNumberKuiElement(props, "range", null, min, max, step, model))
-
     inline fun label(props: Props = empty, forId: String? = null, block: MarkupBuilder.() -> Unit) {
         val realProps = if (forId != null) props.copy(attrs = props.attrs + ("for" to forId)) else props
         htmlElement("label", realProps, block)
     }
-
     inline fun li(props: Props = empty, block: MarkupBuilder.() -> Unit) = htmlElement("li", props, block)
     inline fun nav(props: Props = empty, block: MarkupBuilder.() -> Unit) = htmlElement("nav", props, block)
     inline fun ol(props: Props = empty, block: MarkupBuilder.() -> Unit) = htmlElement("ol", props, block)
     inline fun p(props: Props = empty, block: MarkupBuilder.() -> Unit) = htmlElement("p", props, block)
     inline fun pre(props: Props = empty, block: MarkupBuilder.() -> Unit) = htmlElement("pre", props, block)
-
     fun <T : Any> select(props: Props = empty, options: List<T> = emptyList(), model: KMutableProperty0<T>? = null)
             = add(SelectKuiElement(props, options, model?.toModel()))
     fun <T : Any> select(props: Props = empty, options: List<T> = emptyList(), nullOption: String = "", model: KMutableProperty0<T?>? = null) {
@@ -79,7 +78,6 @@ sealed class MarkupBuilder {
 
         add(SelectKuiElement(props, optsWithNull, delModel))
     }
-
     inline fun small(props: Props = empty, block: MarkupBuilder.() -> Unit) = htmlElement("small", props, block)
     inline fun span(props: Props = empty, block: MarkupBuilder.() -> Unit) = htmlElement("span", props, block)
     inline fun strong(props: Props = empty, block: MarkupBuilder.() -> Unit) = htmlElement("strong", props, block)
@@ -89,12 +87,10 @@ sealed class MarkupBuilder {
     inline fun tr(props: Props = empty, block: MarkupBuilder.() -> Unit) = htmlElement("tr", props, block)
     inline fun th(props: Props = empty, block: MarkupBuilder.() -> Unit) = htmlElement("th", props, block)
     inline fun td(props: Props = empty, block: MarkupBuilder.() -> Unit) = htmlElement("td", props, block)
-
-    fun textarea(props: Props = empty, model: KMutableProperty0<String>?) = add(TextAreaKuiElement(props, model))
-
+    inline fun textarea(props: Props = empty, model: KMutableProperty0<String>? = null) = add(TextAreaKuiElement(props, model))
     inline fun ul(props: Props = empty, block: MarkupBuilder.() -> Unit) = htmlElement("ul", props, block)
 
-    operator fun String.unaryPlus() {
+    inline operator fun String.unaryPlus() {
         add(KuiTextNode(this))
     }
 
