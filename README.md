@@ -50,6 +50,8 @@ To run tests, firefox headless is currently required. Once installed, run the te
 
 ## TODOs
 
+* Improve error handling & graceful failure (rollback of dom?) in case of exception during rendering
+* Use a more performant vdom diffing algorithm
 * Improve testing utility library for testing user applications
     * Virtual rendering
     * Shallow renders

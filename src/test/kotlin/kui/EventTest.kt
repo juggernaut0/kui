@@ -2,7 +2,9 @@ package kui
 
 import kui.test.assertMatchesHtml
 import kui.test.render
+import org.w3c.dom.EventInit
 import org.w3c.dom.HTMLButtonElement
+import org.w3c.dom.events.Event
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -42,6 +44,40 @@ class EventTest {
 
         val button2 = comp.getBySelector("button") as HTMLButtonElement
         button2.click()
+
+        assertTrue(comp.component.disabled)
+        assertEquals(1, comp.component.count)
+    }
+
+    @Test
+    fun removeExtraListener() {
+        val comp = render(object : Component() {
+            var disabled = false
+            var count = 0
+
+            fun handleClick() {
+                count++
+                disabled = true
+                render()
+            }
+
+            override fun render() {
+                if (disabled) {
+                    markup().div { +"click" }
+                } else {
+                    markup().div(Props(extraEvents = mapOf("foo" to { handleClick() }))) { +"click" }
+                }
+            }
+        })
+
+        val div = comp.getBySelector("div")
+        div.dispatchEvent(Event("foo", EventInit(bubbles = true)))
+
+        assertTrue(comp.component.disabled)
+        assertEquals(1, comp.component.count)
+
+        val div2 = comp.getBySelector("div")
+        div2.dispatchEvent(Event("foo", EventInit(bubbles = true)))
 
         assertTrue(comp.component.disabled)
         assertEquals(1, comp.component.count)
