@@ -14,7 +14,7 @@ Add the kui dependency to your build.gradle.kts
 ```groovy
 repositories {
     // ...
-    maven { url "https://juggernaut0.github.io/m2/repository" }
+    maven { setUrl("https://juggernaut0.github.io/m2/repository") }
 }
 dependencies {
     // ...
