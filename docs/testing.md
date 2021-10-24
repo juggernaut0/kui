@@ -17,6 +17,19 @@ dependencies {
 }
 ```
 
+build.gradle.kts
+```kotlin
+repositories {
+    // ...
+    maven { setUrl("https://juggernaut0.github.io/m2/repository") }
+}
+dependencies {
+    // ...
+    implementation("com.github.juggernaut0.kui:kui:0.10.0")
+    testImplementation("com.github.juggernaut0.kui:kui-test:0.10.0")
+}
+```
+
 ## Rendering for Test
 
 The best way to test components is to actually render them as DOM objects and manipulate their behavior as a user would. 
