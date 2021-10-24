@@ -55,3 +55,4 @@ To run tests, firefox headless is currently required. Once installed, run the te
 * Improve testing utility library for testing user applications
     * Virtual rendering
     * Shallow renders
+* Bug: Props construction is not binary compatible when new params are added to the constructor
