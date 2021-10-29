@@ -1,12 +1,12 @@
 plugins {
-    kotlin("js") version "1.4.0"
-    id("org.jetbrains.dokka") version "0.10.1"
+    kotlin("js") version "1.4.31"
+    id("org.jetbrains.dokka") version "1.4.30"
     `maven-publish`
 }
 
 allprojects {
     group = "com.github.juggernaut0.kui"
-    version = "0.12.0"
+    version = "0.13.0"
 
     repositories {
         mavenLocal()
@@ -25,6 +25,10 @@ kotlin {
             }
         }
     }
+}
+
+tasks.withType(Test::class.java) {
+    useJUnitPlatform()
 }
 
 dependencies {

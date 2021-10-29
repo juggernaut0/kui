@@ -10,15 +10,15 @@ typed** components that can be composed to create rich web applications.
 
 ## Getting started
 
-Add the kui dependency to your build.gradle
-```groovy
+Add the kui dependency to your build.gradle.kts
+```kotiln
 repositories {
     // ...
-    maven { url "https://juggernaut0.github.io/m2/repository" }
+    maven { setUrl("https://juggernaut0.github.io/m2/repository") }
 }
 dependencies {
     // ...
-    compile "com.github.juggernaut0.kui:kui:0.11.0"
+    implementation("com.github.juggernaut0.kui:kui:0.11.0")
 }
 ```
 
