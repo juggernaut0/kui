@@ -33,8 +33,11 @@ jobs:
         token: ${{ secrets.PUBLISH_TOKEN }}
     - name: Publish
       run: |
-        ./gradlew publishMavenPublicationToPagesRepository dokka
-        cp -r build/dokka/* kui-test/build/dokka/kui-test pages/docs
+        ./gradlew publishMavenPublicationToPagesRepository dokkaHtml
+        mkdir -p pages/docs/kui
+        cp -r build/dokka/html/* pages/docs/kui
+        mkdir -p pages/docs/kui-test
+        cp -r kui-test/build/dokka/html/* pages/docs/kui-test
         cd pages
         git checkout -b kui-${{ github.sha }}
         git add m2 docs
