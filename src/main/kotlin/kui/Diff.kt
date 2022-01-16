@@ -3,28 +3,9 @@ package kui
 internal fun <T> diff(first: List<T>, second: List<T>, eq: (T, T) -> Boolean = { x, y -> x == y }): List<Diff<T>> {
     val a = first.asReversed()
     val b = second.asReversed()
-    val mat = Array(a.size) { IntArray(b.size) }
-    val pts = Array(a.size) { _ -> Array(b.size) { Ptr.EMPTY } }
-
-    fun mat(ai: Int, bi: Int): Int = if (ai < 0 || bi < 0) 0 else mat[ai][bi]
 
     // build matrix
-    for ((ai, bi) in a.indices product b.indices) {
-        if(eq(a[ai], b[bi])) {
-            mat[ai][bi] = mat(ai - 1, bi - 1) + 1
-            pts[ai][bi] = Ptr.DIAG
-        } else {
-            val left = mat(ai - 1, bi)
-            val up = mat(ai, bi - 1)
-            if (left >= up) {
-                mat[ai][bi] = left
-                pts[ai][bi] = Ptr.LEFT
-            } else {
-                mat[ai][bi] = up
-                pts[ai][bi] = Ptr.UP
-            }
-        }
-    }
+    val pts = buildMat(a, b, eq)
 
     // backtrack
     val result = mutableListOf<Diff<T>>()
@@ -69,12 +50,58 @@ internal data class Added<T>(val new: T) : Diff<T>()
 internal data class Removed<T>(val old: T) : Diff<T>()
 internal data class Unchanged<T>(val old: T, val new: T) : Diff<T>()
 
-internal infix fun <T, U> Iterable<T>.product(that: Iterable<U>): List<Pair<T, U>> {
-    val result = mutableListOf<Pair<T, U>>()
-    for (t in this) {
-        for (u in that) {
-            result.add(t to u)
+private fun <T> buildMat(a: List<T>, b: List<T>, eq: (T, T) -> Boolean): Array<Array<Ptr>> {
+    val pts = Array(a.size) { Array(b.size) { Ptr.EMPTY } }
+    var ai = 0
+    var bi = 0
+
+    search@while (ai < a.size && bi < b.size) {
+        for (d in 0 until (a.size - ai) + (b.size - bi)) {
+            if (bi - 1 >= 0) {
+                pts[ai + d][bi - 1] = Ptr.LEFT
+            }
+            if (ai - 1 >= 0) {
+                pts[ai - 1][bi + d] = Ptr.UP
+            }
+
+            var x = ai + d
+            var y = bi
+
+            while (x >= ai) {
+                if (x >= a.size || y >= b.size) {
+                    x--
+                    y++
+                    continue
+                }
+
+                if (eq(a[x], b[y])) {
+                    pts[x][y] = Ptr.DIAG
+                    ai = x + 1
+                    bi = y + 1
+                    continue@search
+                } else {
+                    pts[x][y] = Ptr.LEFT
+                    x--
+                    y++
+                }
+            }
+        }
+
+        break
+    }
+
+    if (ai == a.size && ai > 0) {
+        val x = ai - 1
+        for (y in bi until b.size) {
+            pts[x][y] = Ptr.UP
         }
     }
-    return result
+    if (bi == b.size && bi > 0) {
+        val y = bi - 1
+        for (x in ai until a.size) {
+            pts[x][y] = Ptr.LEFT
+        }
+    }
+
+    return pts
 }

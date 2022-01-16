@@ -5,3 +5,4 @@ out/
 *.iml
 node_modules/
 .gradletasknamecache
+kotlin-js-store

@@ -1,17 +1,16 @@
 plugins {
-    kotlin("js") version "1.4.31"
-    id("org.jetbrains.dokka") version "1.4.30"
+    kotlin("js") version "1.6.10"
+    id("org.jetbrains.dokka") version "1.6.10"
     `maven-publish`
 }
 
 allprojects {
     group = "com.github.juggernaut0.kui"
-    version = "0.13.0"
+    version = "0.14.0"
 
     repositories {
         mavenLocal()
         mavenCentral()
-        jcenter()
     }
 }
 
