@@ -101,4 +101,16 @@ class DiffTest {
 
         assertEquals(b, apply(a, diffs))
     }
+
+    @Test
+    fun testAlmostDifferent() {
+        val a = listOf(1, 2, 3, 0)
+        val b = listOf(4, 5, 6, 0)
+
+        val diffs = diff(a, b)
+
+        println(diffs)
+
+        assertEquals(b, apply(a, diffs))
+    }
 }

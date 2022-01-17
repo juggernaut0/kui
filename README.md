@@ -14,11 +14,11 @@ Add the kui dependency to your build.gradle.kts
 ```kotiln
 repositories {
     // ...
-    maven { setUrl("https://juggernaut0.github.io/m2/repository") }
+    maven("https://juggernaut0.github.io/m2/repository")
 }
 dependencies {
     // ...
-    implementation("com.github.juggernaut0.kui:kui:0.14.0")
+    implementation("com.github.juggernaut0.kui:kui:0.14.1")
 }
 ```
 

@@ -57,10 +57,10 @@ private fun <T> buildMat(a: List<T>, b: List<T>, eq: (T, T) -> Boolean): Array<A
 
     search@while (ai < a.size && bi < b.size) {
         for (d in 0 until (a.size - ai) + (b.size - bi)) {
-            if (bi - 1 >= 0) {
+            if (bi - 1 >= 0 && ai + d < a.size) {
                 pts[ai + d][bi - 1] = Ptr.LEFT
             }
-            if (ai - 1 >= 0) {
+            if (ai - 1 >= 0 && bi + d < b.size) {
                 pts[ai - 1][bi + d] = Ptr.UP
             }
 
@@ -68,10 +68,12 @@ private fun <T> buildMat(a: List<T>, b: List<T>, eq: (T, T) -> Boolean): Array<A
             var y = bi
 
             while (x >= ai) {
-                if (x >= a.size || y >= b.size) {
+                if (x >= a.size) {
                     x--
                     y++
                     continue
+                } else if (y >= b.size) {
+                    break
                 }
 
                 if (eq(a[x], b[y])) {
