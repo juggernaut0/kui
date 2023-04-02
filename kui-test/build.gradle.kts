@@ -18,9 +18,7 @@ dependencies {
 publishing {
     publications {
         create<MavenPublication>("maven") {
-            artifact(tasks.named("jsIrJar"))
-            artifact(tasks.named("jsLegacyJar"))
-            artifact(tasks.named("kotlinSourcesJar"))
+            from(components.getByName("kotlin"))
         }
     }
 
