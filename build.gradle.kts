@@ -1,12 +1,12 @@
 plugins {
-    kotlin("js") version "1.6.10"
-    id("org.jetbrains.dokka") version "1.6.10"
+    kotlin("js") version "1.8.20"
+    id("org.jetbrains.dokka") version "1.8.10"
     `maven-publish`
 }
 
 allprojects {
     group = "com.github.juggernaut0.kui"
-    version = "0.14.1"
+    version = "0.15.0"
 
     repositories {
         mavenLocal()
@@ -14,10 +14,18 @@ allprojects {
     }
 }
 
+val downloadFirefox by tasks.registering(DownloadFirefoxTask::class) {
+    version.set("111.0.1")
+}
+
 kotlin {
-    js {
+    js(BOTH) {
         browser {
             testTask {
+                dependsOn(downloadFirefox)
+                doFirst {
+                    environment("FIREFOX_BIN", downloadFirefox.flatMap { it.outputBin }.get().asFile.absolutePath)
+                }
                 useKarma {
                     useFirefoxHeadless()
                 }
@@ -31,15 +39,14 @@ tasks.withType(Test::class.java) {
 }
 
 dependencies {
-    testImplementation("org.jetbrains.kotlin:kotlin-test-js")
+    testImplementation(kotlin("test"))
     testImplementation(project(":kui-test"))
 }
 
 publishing {
     publications {
         create<MavenPublication>("maven") {
-            artifact(tasks.named("jsJar"))
-            artifact(tasks.named("kotlinSourcesJar"))
+            from(components.getByName("kotlin"))
         }
     }
 

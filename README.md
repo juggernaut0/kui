@@ -18,7 +18,7 @@ repositories {
 }
 dependencies {
     // ...
-    implementation("com.github.juggernaut0.kui:kui:0.14.1")
+    implementation("com.github.juggernaut0.kui:kui:0.15.0")
 }
 ```
 
@@ -46,7 +46,9 @@ Check out the [usage guide](/docs/usage.md), [api docs](https://juggernaut0.gith
 To publish locally, clone the project and run 
 `./gradlew publishToMavenLocal`.
 
-To run tests, firefox headless is currently required. Once installed, run the tests with `./gradlew build`.
+To run tests, firefox headless is currently required. It will be downloaded when tests are run with `./gradlew build`.
+
+To run the example project, use `./gradlew :example:run`.
 
 ## TODOs
 
