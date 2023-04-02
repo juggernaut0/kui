@@ -14,10 +14,18 @@ allprojects {
     }
 }
 
+val downloadFirefox by tasks.registering(DownloadFirefoxTask::class) {
+    version.set("111.0.1")
+}
+
 kotlin {
     js(BOTH) {
         browser {
             testTask {
+                dependsOn(downloadFirefox)
+                doFirst {
+                    environment("FIREFOX_BIN", downloadFirefox.flatMap { it.outputBin }.get().asFile.absolutePath)
+                }
                 useKarma {
                     useFirefoxHeadless()
                 }
