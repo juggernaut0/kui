@@ -1,12 +1,12 @@
 plugins {
-    kotlin("js") version "1.6.10"
-    id("org.jetbrains.dokka") version "1.6.10"
+    kotlin("js") version "1.8.20"
+    id("org.jetbrains.dokka") version "1.8.10"
     `maven-publish`
 }
 
 allprojects {
     group = "com.github.juggernaut0.kui"
-    version = "0.14.1"
+    version = "0.15.0-SNAPSHOT"
 
     repositories {
         mavenLocal()
@@ -15,7 +15,7 @@ allprojects {
 }
 
 kotlin {
-    js {
+    js(BOTH) {
         browser {
             testTask {
                 useKarma {
@@ -31,14 +31,15 @@ tasks.withType(Test::class.java) {
 }
 
 dependencies {
-    testImplementation("org.jetbrains.kotlin:kotlin-test-js")
+    testImplementation(kotlin("test"))
     testImplementation(project(":kui-test"))
 }
 
 publishing {
     publications {
         create<MavenPublication>("maven") {
-            artifact(tasks.named("jsJar"))
+            artifact(tasks.named("jsIrJar"))
+            artifact(tasks.named("jsLegacyJar"))
             artifact(tasks.named("kotlinSourcesJar"))
         }
     }

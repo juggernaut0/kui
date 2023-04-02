@@ -5,20 +5,21 @@ plugins {
 }
 
 kotlin {
-    js {
+    js(BOTH) {
         browser()
     }
 }
 
 dependencies {
     implementation(project(":"))
-    implementation("org.jetbrains.kotlin:kotlin-test-js")
+    implementation(kotlin("test"))
 }
 
 publishing {
     publications {
         create<MavenPublication>("maven") {
-            artifact(tasks.named("jsJar"))
+            artifact(tasks.named("jsIrJar"))
+            artifact(tasks.named("jsLegacyJar"))
             artifact(tasks.named("kotlinSourcesJar"))
         }
     }

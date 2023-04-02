@@ -48,6 +48,8 @@ To publish locally, clone the project and run
 
 To run tests, firefox headless is currently required. Once installed, run the tests with `./gradlew build`.
 
+To run the example project, use `./gradlew :example:run`.
+
 ## TODOs
 
 * Improve error handling & graceful failure (rollback of dom?) in case of exception during rendering
